@@ -1,0 +1,72 @@
+name: Claude Issue Triage
+
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  triage:
+    # Evita que el workflow se dispare por acciones de bots (incluyéndose a sí mismo)
+    if: github.event.sender.type != 'Bot'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read      # leer el código del juego para fundamentar el diagnóstico
+      issues: write        # añadir labels y publicar el comentario de diagnóstico
+      id-token: write      # requerido por claude-code-action
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Ensure standard labels exist
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh label create "bug" --color "d73a4a" --description "Algo no funciona como se espera" --force
+          gh label create "enhancement" --color "a2eeef" --description "Nueva funcionalidad o mejora" --force
+          gh label create "question" --color "d876e3" --description "Se necesita más información" --force
+          gh label create "documentation" --color "0075ca" --description "Mejoras o adiciones a la documentación" --force
+          gh label create "priority:high" --color "b60205" --description "Prioridad alta" --force
+          gh label create "priority:medium" --color "fbca04" --description "Prioridad media" --force
+          gh label create "priority:low" --color "0e8a16" --description "Prioridad baja" --force
+          gh label create "needs-triage" --color "ededed" --description "Pendiente de revisión inicial" --force
+
+      - name: Run Claude issue triage
+        id: claude-triage
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          claude_args: '--allowed-tools "Bash(gh label list:*),Bash(gh issue view:*),Bash(gh issue edit:*),Bash(gh issue comment:*),Bash(gh api:*)"'
+          prompt: |
+            Analiza el issue #${{ github.event.issue.number }} de este repositorio (un juego de Tetris
+            en JavaScript vanilla) y realiza dos tareas. Responde siempre en español.
+
+            ## Tarea 1: Asignar labels
+            1. Ejecuta `gh label list` para ver las labels disponibles en el repositorio.
+            2. Lee el título y cuerpo del issue #${{ github.event.issue.number }}.
+            3. Asigna únicamente labels de esa lista existente (no crees labels nuevas) usando
+               `gh issue edit ${{ github.event.issue.number }} --add-label "..."`.
+               Elige al menos una label de tipo (bug, enhancement, question, documentation) y
+               una de prioridad (priority:high, priority:medium, priority:low) según la urgencia
+               e impacto que describa el issue. Si el issue ya tenía labels que ya no aplican,
+               puedes quitarlas con `--remove-label`.
+
+            ## Tarea 2: Diagnóstico general del problema
+            Inspecciona el código relevante del repositorio (por ejemplo `game.js`, `index.html`,
+            `style.css`) para entender el contexto del área afectada, y publica un comentario en
+            el issue con un diagnóstico general que sirva de base para implementar la solución
+            después. El comentario debe:
+            - Empezar exactamente con la línea `<!-- claude-triage -->` seguida de
+              `## 🤖 Diagnóstico automático`.
+            - Incluir estas secciones: **Resumen del problema**, **Causa probable**,
+              **Archivos/áreas afectadas** (con rutas concretas del repo) y
+              **Enfoque sugerido para la solución** (a alto nivel, sin implementar el código todavía).
+
+            Antes de publicar, busca si ya existe un comentario que empiece con el marcador
+            `<!-- claude-triage -->` (por ejemplo con `gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments`).
+            - Si existe, actualízalo con el diagnóstico nuevo usando
+              `gh api --method PATCH repos/${{ github.repository }}/issues/comments/<comment_id> -f body='...'`.
+            - Si no existe, créalo con `gh issue comment ${{ github.event.issue.number }} --body "..."`.
+            Esto evita duplicar el diagnóstico cuando el issue se edita varias veces.
