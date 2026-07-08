@@ -52,10 +52,63 @@
       </aside>
     </div>
 
+    <div id="start-screen" class="overlay">
+      <div class="overlay-box start-box">
+        <p class="screen-title">TETRIS</p>
+
+        <div class="stats-row">
+          <div class="stat">
+            <span class="label">MAX LÍNEAS</span>
+            <span class="value" id="start-max-lines">0</span>
+          </div>
+          <div class="stat">
+            <span class="label">MEJOR COMBO</span>
+            <span class="value" id="start-best-combo">0</span>
+          </div>
+        </div>
+
+        <table class="records-table">
+          <thead>
+            <tr><th>#</th><th>Nombre</th><th>Puntos</th></tr>
+          </thead>
+          <tbody id="start-records-body"></tbody>
+        </table>
+
+        <button id="play-btn">Jugar</button>
+        <button id="reset-records-btn" class="secondary-btn">Resetear récords</button>
+      </div>
+    </div>
+
     <div id="overlay" class="overlay hidden">
       <div class="overlay-box">
         <p id="overlay-title">GAME OVER</p>
         <p id="overlay-score"></p>
+
+        <div id="gameover-extra" class="hidden">
+          <div class="stats-row">
+            <div class="stat">
+              <span class="label">MAX LÍNEAS</span>
+              <span class="value" id="gameover-max-lines">0</span>
+            </div>
+            <div class="stat">
+              <span class="label">MEJOR COMBO</span>
+              <span class="value" id="gameover-best-combo">0</span>
+            </div>
+          </div>
+
+          <div id="name-form" class="name-form hidden">
+            <input type="text" id="player-name-input" maxlength="10" placeholder="Tu nombre" />
+            <button id="save-record-btn">Guardar</button>
+          </div>
+
+          <table class="records-table">
+            <thead>
+              <tr><th>#</th><th>Nombre</th><th>Puntos</th></tr>
+            </thead>
+            <tbody id="gameover-records-body"></tbody>
+          </table>
+        </div>
+
         <button id="restart-btn">Reiniciar</button>
       </div>
     </div>
