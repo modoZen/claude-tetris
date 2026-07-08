@@ -217,6 +217,7 @@ kbd {
   flex-direction: column;
   gap: 12px;
   align-items: center;
+  min-width: 280px;
 }
 
 #overlay-title {
@@ -248,4 +249,163 @@ kbd {
 
 #restart-btn:hover {
   background: var(--btn-bg-hover);
+}
+
+/* ---- Pantalla de inicio / récords ---- */
+.start-box {
+  width: 280px;
+}
+
+.screen-title {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 6px;
+  color: var(--title);
+}
+
+.stats-row {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.stat .value {
+  font-size: 18px;
+}
+
+.records-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 13px;
+}
+
+.records-table th {
+  color: var(--label);
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-align: left;
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--kbd-border);
+}
+
+.records-table th:first-child,
+.records-table td:first-child {
+  text-align: center;
+  width: 20px;
+}
+
+.records-table th:last-child,
+.records-table td:last-child {
+  text-align: right;
+}
+
+.records-table td {
+  color: var(--text);
+  padding: 4px 6px;
+}
+
+.records-table tr.highlight td {
+  color: var(--value);
+  font-weight: 700;
+  background: var(--kbd-bg);
+}
+
+.records-table .no-records {
+  text-align: center;
+  color: var(--control-text);
+  padding: 10px 6px;
+}
+
+.name-form {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.name-form.hidden {
+  display: none;
+}
+
+#player-name-input {
+  background: var(--kbd-bg);
+  border: 1px solid var(--kbd-border);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 13px;
+  width: 130px;
+}
+
+#player-name-input:focus {
+  outline: 1px solid var(--btn-bg);
+}
+
+#save-record-btn {
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+#save-record-btn:hover {
+  background: var(--btn-bg-hover);
+}
+
+#play-btn {
+  margin-top: 4px;
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  border: none;
+  border-radius: 6px;
+  padding: 10px 28px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.15s;
+}
+
+#play-btn:hover {
+  background: var(--btn-bg-hover);
+}
+
+.secondary-btn {
+  background: transparent;
+  color: var(--control-text);
+  border: 1px solid var(--kbd-border);
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.secondary-btn:hover {
+  background: var(--kbd-bg);
+  color: var(--text);
+}
+
+#gameover-extra {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+}
+
+#gameover-extra.hidden {
+  display: none;
 }
